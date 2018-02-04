@@ -9,7 +9,7 @@ let actions = {
     fetch('https://hacker-news.firebaseio.com/v0/jobstories.json')
     .then(res => {
       if (res.status !== 200) dispatch(actions.failPickOrange(res.statusText));
-      let weight = Math.random() * 4;
+      let weight = Math.floor((Math.random() * 1 + 3) * 100) / 100;
       dispatch(actions.donePickOrange(weight));
     }).catch(e => {
       dispatch(actions.failPickOrange(e.statusText));

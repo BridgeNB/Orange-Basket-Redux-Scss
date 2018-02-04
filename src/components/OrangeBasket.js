@@ -6,25 +6,7 @@ import Orange from './Orange';
 import actions from '../actions/orangeActions';
 
 class OrangeBasket extends Component {
-  render() {
-    let { state, actions } = this.props;
-    let mockState = {
-      ifPicked: false,
-      newOrangeId: 2,
-      oranges: [
-          {
-            id: 0,
-            weight: 3,
-            isEaten: false
-          },
-          {
-            id: 1,
-            weight: 4,
-            isEaten: true
-          }
-      ]
-    };
-
+  findStatusNow(){
     let stats = {
         orangeNow: {
             quantity: 0,
@@ -35,19 +17,24 @@ class OrangeBasket extends Component {
             weight: 0
         }
     };
-
-    let mockActions = {
-      eatApple : id => console.log('eatApple',id),
-      foo: (arg1,arg2) => console.log('foo',arg1,arg2)
-    };
-    state = mockState; actions = mockActions;
-
-
-    state.oranges.map((orange) => {
-      let selector = orange.isEaten? 'orangeEaten': 'orangeNow';
-      stats[selector].quantity += 1;
-      stats[selector].weight += orange.weight;
+    this.props.orangeBasket.oranges.forEach((orange) => {
+        let selector = orange.isEaten? 'orangeEaten': 'orangeNow';
+        stats[selector].quantity += 1;
+        stats[selector].weight += Math.floor(orange.weight * 100) / 100;
     });
+    return stats;
+  }
+
+  render() {
+    let { orangeBasket, actions } = this.props;
+    {console.log(actions)};
+
+    let status  = this.findStatusNow();
+
+    let {
+      orangeNow: {quantity: notEatenQuantity, weight: notEatenWeight},
+      orangeEaten: {quantity: eatenQuantity, weight: eatenWeight}
+    } = status;
 
     return (
       <div className="orangeBasket">
@@ -56,23 +43,23 @@ class OrangeBasket extends Component {
           <div className="section">
             <div className="head">Current</div>
             <div className="content">
-              {stats.orangeNow.quantity} oranges,
-              {stats.orangeNow.weight} ounce
+              {notEatenQuantity} Oranges,
+              {' ' + notEatenWeight} ounce
             </div>
           </div>
           <div className="section">
             <div className="head">Have consumed</div>
             <div className="content">
-              {stats.orangeEaten.quantity} Oranges,
-              {stats.orangeEaten.weight} ounce
+              {eatenQuantity} Oranges,
+              {' ' + eatenWeight} ounce
             </div>
           </div>
         </div>
         <div className="orangeList">
-          { state.oranges.map((orange) =>
+          { orangeBasket.oranges.map((orange) =>
             <Orange
               state={orange}
-              actions={{eatOrange: actions.eatOrange}}
+              actions={ actions.eatOrange }
               key={orange.id}
             />
           )}
@@ -87,16 +74,12 @@ class OrangeBasket extends Component {
   }
 }
 
-function selectState(state) {
-    return {
-        state: state.orangeBasket
-    }
-}
+const mapStateToProps = (state) => ({
+      orangeBasket: state.orangeBasket
+});
 
-function buildActionDispatcher(dispatch) {
-  return {
+const mapDispatchToProps = dispatch => ({
       actions: bindActionCreators(actions, dispatch)
-    }
-}
+});
 
-export default connect(selectState, buildActionDispatcher)(OrangeBasket);
+export default connect(mapStateToProps, mapDispatchToProps)(OrangeBasket);
