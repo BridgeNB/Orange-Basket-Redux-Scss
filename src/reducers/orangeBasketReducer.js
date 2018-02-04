@@ -38,7 +38,7 @@ export default (state = initialState, action) => {
     case 'orange/FAIL_PICK_ORANGE':
         return fromJS(state).set('ifPicked', false).toJS();
 
-    case 'orange/EAT_Orange':
+    case 'orange/EAT_ORANGE':
         return fromJS(state).setIn(['oranges', action.payload, 'isEaten'], true).toJS();
 
     default:

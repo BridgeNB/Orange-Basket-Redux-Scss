@@ -32,7 +32,7 @@ let actions = {
   }),
 
   eatOrange: orangeId => ({
-    type: 'orange/EAT_orange',
+    type: 'orange/EAT_ORANGE',
     payload: orangeId
   })
 };

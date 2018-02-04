@@ -20,14 +20,32 @@ class OrangeBasket extends Component {
     this.props.orangeBasket.oranges.forEach((orange) => {
         let selector = orange.isEaten? 'orangeEaten': 'orangeNow';
         stats[selector].quantity += 1;
-        stats[selector].weight += Math.floor(orange.weight * 100) / 100;
+        stats[selector].weight += orange.weight;
     });
     return stats;
   }
 
+  getOrangeIndividuals(oranges) {
+    let data = [];
+
+    oranges.forEach((orange) => {
+      if (!orange.isEaten) {
+        data.push(<Orange
+          state={orange}
+          eatOrange={this.props.actions.eatOrange}
+          key={orange.id}/>)
+      }
+    });
+
+    if (!data.length)
+      data.push(<div className="empty-basket" key="empty">This is an empty basket</div>);
+
+    return data;
+  }
+
   render() {
     let { orangeBasket, actions } = this.props;
-    {console.log(actions)};
+    let { oranges, isPicking } = orangeBasket;
 
     let status  = this.findStatusNow();
 
@@ -44,25 +62,19 @@ class OrangeBasket extends Component {
             <div className="head">Current</div>
             <div className="content">
               {notEatenQuantity} Oranges,
-              {' ' + notEatenWeight} ounce
+              {' ' + notEatenWeight.toFixed(2)} ounce
             </div>
           </div>
           <div className="section">
             <div className="head">Have consumed</div>
             <div className="content">
               {eatenQuantity} Oranges,
-              {' ' + eatenWeight} ounce
+              {' ' + eatenWeight.toFixed(2)} ounce
             </div>
           </div>
         </div>
         <div className="orangeList">
-          { orangeBasket.oranges.map((orange) =>
-            <Orange
-              state={orange}
-              actions={ actions.eatOrange }
-              key={orange.id}
-            />
-          )}
+          { this.getOrangeIndividuals(oranges) }
         </div>
         <div className="btn-div">
           <button onClick={ actions.pickOrange }>

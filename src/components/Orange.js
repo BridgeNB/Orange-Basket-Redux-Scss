@@ -7,9 +7,9 @@ class Orange extends Component {
   }
   render() {
     let { state, eatOrange } = this.props;
-    {console.log('eeeee')}
-    {console.log(eatOrange)}
+
     if (state.isEaten) return null;
+
     return (
       <div className="orange">
         <div className="orangeImage"><img src={require('../img/orange.png')} alt="" /></div>
@@ -17,7 +17,7 @@ class Orange extends Component {
           <div className="name"> No. {state.id + 1} Orange</div>
           <div className="weight">{state.weight} oz</div>
         </div>
-        <div className="btn-div" onClick={eatOrange}><button>Eat</button></div>
+        <div className="btn-div" onClick={eatOrange.bind(this, state.id)}><button>Eat</button></div>
       </div>
     );
   }
@@ -25,7 +25,7 @@ class Orange extends Component {
 
 
 Orange.propTypes = {
-
+  eatOrange: PropTypes.func
 }
 
 export default Orange;
